@@ -53,19 +53,12 @@ class HashTable:
 
         Fill this in.
         '''
+        idx = self._hash_mod(key)
 
-        pos = self._hash_mod(key)
-        if self.storage[pos] == None:
-            self.storage[pos] = key
-        else:
-            while self.storage[pos] != None:
-                if len(self.storage) == self.capacity:
-                    self.resize()
-                pos += 1
-                if pos >= self.capacity:
-                    pos = 0
-                self.storage[pos] = key
-                return self.storage
+        if self.storage[idx] is not None:
+            print(f'Value already stored...')
+
+        self.storage[idx] = LinkedPair(key, value)
 
     def remove(self, key):
         '''
@@ -75,8 +68,12 @@ class HashTable:
 
         Fill this in.
         '''
-        if not self.storage[key]:
-            print("Cannot be found.")
+        idx = self._hash_mod(key)
+
+        if self.storage[idx] is not None:
+            self.storage[idx] = None
+        else:
+            print(f'Value is not found...')
 
     def retrieve(self, key):
         '''
@@ -86,11 +83,9 @@ class HashTable:
 
         Fill this in.
         '''
-        key = self._hash_mod(key)
-        if not self.storage[key]:
-            return None
-        else:
-            return self.storage[key]
+        idx = self._hash_mod(key)
+
+        return self.storage[idx].value
 
     def resize(self):
         '''
@@ -99,12 +94,15 @@ class HashTable:
 
         Fill this in.
         '''
+        old_stor = self.storage
         self.capacity = self.capacity * 2
-        count = len(self.storage)
-        new_stor = [None] * self.capacity
+        self.storage = [None] * self.capacity
 
-        for idx in range(count):
-            new_stor[idx] = self.storage[idx]
+        for thing in old_stor:
+            if thing is None:
+                return
+            else:
+                self.insert(thing.key, thing.value)
 
 
 if __name__ == "__main__":
