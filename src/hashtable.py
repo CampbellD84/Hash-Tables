@@ -56,9 +56,9 @@ class HashTable:
         idx = self._hash_mod(key)
 
         if self.storage[idx] is not None:
-            print(f'Value already stored...')
-
-        self.storage[idx] = LinkedPair(key, value)
+            print(f'Value stored already...')
+        else:
+            self.storage[idx] = LinkedPair(key, value)
 
     def remove(self, key):
         '''
@@ -73,7 +73,7 @@ class HashTable:
         if self.storage[idx] is not None:
             self.storage[idx] = None
         else:
-            print(f'Value is not found...')
+            print(f'Key not found...')
 
     def retrieve(self, key):
         '''
