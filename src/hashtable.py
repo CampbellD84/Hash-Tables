@@ -54,11 +54,21 @@ class HashTable:
         Fill this in.
         '''
         idx = self._hash_mod(key)
+        l_pair = LinkedPair(key, value)
 
-        if self.storage[idx] is not None:
-            print(f'Value stored already...')
+        if self.storage[idx] is None:
+            self.storage[idx] = l_pair
         else:
-            self.storage[idx] = LinkedPair(key, value)
+            curr_pair = self.storage[idx]
+            while curr_pair:
+                if curr_pair.key == key:
+                    curr_pair.value = value
+                    break
+                elif curr_pair.next:
+                    curr_pair = curr_pair.next
+                else:
+                    curr_pair.next = l_pair
+                    break
 
     def remove(self, key):
         '''
@@ -73,7 +83,7 @@ class HashTable:
         if self.storage[idx] is not None:
             self.storage[idx] = None
         else:
-            print(f'Key not found...')
+            print(f'Value at Key {key} not found...')
 
     def retrieve(self, key):
         '''
@@ -85,7 +95,15 @@ class HashTable:
         '''
         idx = self._hash_mod(key)
 
-        return self.storage[idx].value
+        if self.storage[idx] is not None:
+            if self.storage[idx].key == key:
+                return self.storage[idx].value
+            curr_pair = self.storage[idx].next
+            while curr_pair is not None:
+                if curr_pair.key == key:
+                    return curr_pair.value
+                curr_pair = curr_pair.next
+        return None
 
     def resize(self):
         '''
@@ -94,15 +112,14 @@ class HashTable:
 
         Fill this in.
         '''
+        self.capacity *= 2
         old_stor = self.storage
-        self.capacity = self.capacity * 2
         self.storage = [None] * self.capacity
 
-        for thing in old_stor:
-            if thing is None:
-                return
-            else:
-                self.insert(thing.key, thing.value)
+        for pair in old_stor:
+            while pair is not None:
+                self.insert(pair.key, pair.value)
+                pair = pair.next
 
 
 if __name__ == "__main__":
